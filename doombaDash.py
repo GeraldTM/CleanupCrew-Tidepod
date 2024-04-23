@@ -10,10 +10,10 @@ screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Doomba Dashboard V1.0")
 
 # Constants
-max_rpm = 1000
+max_rpm = 1300
 max_speed = 100  # Maximum speed
 deadband = 0.1  # Deadband threshold
-wheel_conversion_factor = 10 / 2  # Wheel size to robot size conversion factor
+wheel_conversion_factor = 8 / 2  # Wheel size to robot size conversion factor
 
 # Variables for FPS calculation
 frames = 0
@@ -26,7 +26,6 @@ def apply_deadband(value, threshold):
     if abs(value) < threshold:
         return 0
     return value
-
 
 # Function to rotate a surface around its center
 def rotate_surface(surface, angle, center_pos):
@@ -47,9 +46,16 @@ def get_wheel_rpms(speed, heading, target_rpm, imu_data, conversion_factor):
     )
     return right_wheel_rpm, left_wheel_rpm
 
+def rpm_to_accelerometer_data_to_rpm(rpm):
+    acc_out = (rpm**2)*8*(1.118*(10**-5))
+    acc_to_rpm = math.sqrt(acc_out/(8*(1.118*(10**-5))))
+    return acc_to_rpm
 
-def fake_imu_data(rpm, elapsed_time):
+print(rpm_to_accelerometer_data_to_rpm(1000))
+
+def fake_accelerometer_data(rpm, elapsed_time):
     # Convert RPM to rotations per second
+    rpm = rpm_to_accelerometer_data_to_rpm(rpm)
     rps = rpm / 60
     # Calculate radians over elapsed time
     total_rotation = rps * elapsed_time * 2 * math.pi
@@ -106,7 +112,7 @@ while running:
     pygame.draw.rect(robot_surface, (0, 0, 0), (400, 200, 50, 100))  # Right wheel
 
     # Get wheel RPMs and fake IMU data
-    imu_data = fake_imu_data(target_rpm, current_time)
+    imu_data = fake_accelerometer_data(target_rpm, current_time)
     right_wheel_rpm, left_wheel_rpm = get_wheel_rpms(
         speed, heading, target_rpm, imu_data, wheel_conversion_factor
     )
