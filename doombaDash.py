@@ -10,7 +10,7 @@ screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Doomba Dashboard V1.0")
 
 # Constants
-max_rpm = 1300
+max_rpm = 1250
 max_speed = 100  # Maximum speed
 deadband = 0.1  # Deadband threshold
 wheel_conversion_factor = 8 / 2  # Wheel size to robot size conversion factor
@@ -19,6 +19,8 @@ wheel_conversion_factor = 8 / 2  # Wheel size to robot size conversion factor
 frames = 0
 start_time = pygame.time.get_ticks()
 fps = 0  # Initialize FPS variable
+
+imu_data = 0
 
 
 # Function to apply deadband
@@ -53,15 +55,16 @@ def rpm_to_accelerometer_data_to_rpm(rpm):
 
 print(rpm_to_accelerometer_data_to_rpm(1000))
 
-def fake_accelerometer_data(rpm, elapsed_time):
+def fake_accelerometer_data(rpm, elapsed_time, rotational_position):
     # Convert RPM to rotations per second
     rpm = rpm_to_accelerometer_data_to_rpm(rpm)
     rps = rpm / 60
     # Calculate radians over elapsed time
     total_rotation = rps * elapsed_time * 2 * math.pi
     # Normalize and clamp to stay within 0 and 2π
-    normalized_angle = max(0, total_rotation % (2 * math.pi))
-    return normalized_angle
+    normalized_angle = max(0, total_rotation)
+    rotational_position += normalized_angle
+    return rotational_position % (2 * math.pi)
 
 
 print(2 * math.pi)
@@ -81,7 +84,7 @@ while running:
 
     frames += 1
     current_time = pygame.time.get_ticks()
-    frame_time = (current_time - start_time) / 1000
+    elapsed_time = (current_time - start_time) / 1000
 
     # Joystick initialization
     if pygame.joystick.get_count() > 0:
@@ -112,7 +115,7 @@ while running:
     pygame.draw.rect(robot_surface, (0, 0, 0), (400, 200, 50, 100))  # Right wheel
 
     # Get wheel RPMs and fake IMU data
-    imu_data = fake_accelerometer_data(target_rpm, current_time)
+    imu_data = fake_accelerometer_data(target_rpm, elapsed_time, imu_data)
     right_wheel_rpm, left_wheel_rpm = get_wheel_rpms(
         speed, heading, target_rpm, imu_data, wheel_conversion_factor
     )
@@ -135,8 +138,8 @@ while running:
     screen.blit(rotated_surf, new_pos)
 
     # Update frame count and calculate FPS
-    if frame_time >= 1:  # Calculate FPS every second
-        fps = round(frames / frame_time, 2)  # Calculate FPS
+    if elapsed_time >= 1:  # Calculate FPS every second
+        fps = round(frames / elapsed_time, 2)  # Calculate FPS
         frames = 0  # Reset frames for the next period
         start_time = current_time  # Update the start time for the next period
 
