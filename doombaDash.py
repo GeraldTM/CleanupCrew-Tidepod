@@ -7,13 +7,13 @@ pygame.joystick.init()
 
 # Set up display
 screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("Doomba Dashboard V1.0")
+pygame.display.set_caption("Tidepod POC demo V1.0")
 
 # Constants
-max_rpm = 1250
+max_rpm = 4000
 max_speed = 100  # Maximum speed
 deadband = 0.1  # Deadband threshold
-wheel_conversion_factor = 8 / 2  # Wheel size to robot size conversion factor
+wheel_conversion_factor = 5.46868/ 2  # Wheel size to robot size conversion factor
 
 # Variables for FPS calculation
 frames = 0
@@ -53,10 +53,8 @@ def rpm_to_accelerometer_data_to_rpm(rpm):
     acc_to_rpm = math.sqrt(acc_out/(8*(1.118*(10**-5))))
     return acc_to_rpm
 
-print(rpm_to_accelerometer_data_to_rpm(1000))
-
 def fake_accelerometer_data(rpm, elapsed_time, rotational_position):
-    # Convert RPM to rotations per second
+    # Emulate accelerometer data
     rpm = rpm_to_accelerometer_data_to_rpm(rpm)
     rps = rpm / 60
     # Calculate radians over elapsed time
@@ -147,7 +145,7 @@ while running:
     font = pygame.font.Font(pygame.font.get_default_font(), 36)
     fps_text = font.render(str(fps), True, (255, 0, 0))  # Red FPS text
     title_text = font.render(
-        "Doomba Dashboard V1.0", True, (255, 255, 255)
+        "Tidepod POC demo V1.0", True, (255, 255, 255)
     )  # White title text
     heading_text = font.render(f"{int(heading)}", True, (255, 0, 0))  # Red heading text
 
