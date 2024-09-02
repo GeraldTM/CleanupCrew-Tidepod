@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://0ycci3wpxqy"]
+
+[ext_resource type="ArrayMesh" uid="uid://cfw50mauwlltl" path="res://H3LIS331.obj" id="1_fmdol"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nxpn6"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.999865, 0.00646359, -0.0151354, 0, 0.91965, 0.392738, 0.0164577, -0.392685, 0.919526, -0.0847062, 0.781234, 1.9484)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(21.2132, 15, 15, 0, 21.2132, -21.2132, -21.2132, 15, 15, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_nxpn6")
+lod_bias = 0.001
+mesh = ExtResource("1_fmdol")

@@ -64,9 +64,6 @@ def fake_accelerometer_data(rpm, elapsed_time, rotational_position):
     rotational_position += normalized_angle
     return rotational_position % (2 * math.pi)
 
-
-print(2 * math.pi)
-
 # Create the robot surface
 robot_surface = pygame.Surface((500, 500), pygame.SRCALPHA)  # Transparent support
 

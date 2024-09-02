@@ -1,0 +1,15 @@
+ea4bc82a6ad023ab7ee23ee620429895
+::res://::1724634139
+H3LIS331.obj::Mesh::5171068682015050741::1724633681::1724633685::1::::<><>::
+icon.svg::CompressedTexture2D::1994499560882105210::1724633046::1724633054::1::::<><>::
+::res://addons/::1724634139
+::res://addons/LineRenderer/::1724634139
+line_plugin.gd::GDScript::-1::1724634139::0::1::::<>EditorPlugin<>::
+line_renderer.gd::GDScript::-1::1724634139::0::1::::<>MeshInstance3D<>::
+line_render_icon.svg::CompressedTexture2D::8394506683561103367::1724634139::1724634140::1::::<><>::
+plugin.cfg::TextFile::-1::1724634139::0::1::::<><>::
+README.md::TextFile::-1::1724634139::0::1::::<><>::
+::res://demo/::1724634140
+camera.gd::GDScript::-1::1724634139::0::1::::<>Camera3D<>::
+demo.tscn::PackedScene::5490320671419960584::1724634139::0::1::::<><>::uid://mblnkohmbep2::::res://demo/line.png<>res://addons/LineRenderer/line_renderer.gd<>res://demo/camera.gd
+line.png::CompressedTexture2D::845022150846534865::1724634140::1724634140::1::::<><>::
