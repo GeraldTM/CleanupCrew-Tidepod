@@ -1,10 +1,16 @@
-import pygame
 import math
+import os
+
+os.environ["PYGAME_DETECT_AVX2"] = "1"
+
+if "XDG_RUNTIME_DIR" not in os.environ:
+    os.environ["XDG_RUNTIME_DIR"] = "/tmp/runtime-root"
+
+import pygame
 
 # Initialize Pygame and Joystick
 pygame.init()
 pygame.joystick.init()
-
 # Set up display
 screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Tidepod POC demo V1.0")
@@ -13,7 +19,7 @@ pygame.display.set_caption("Tidepod POC demo V1.0")
 max_rpm = 4000
 max_speed = 100  # Maximum speed
 deadband = 0.1  # Deadband threshold
-wheel_conversion_factor = 5.46868/ 2  # Wheel size to robot size conversion factor
+wheel_conversion_factor = 5.46868 / 2  # Wheel size to robot size conversion factor
 
 # Variables for FPS calculation
 frames = 0
@@ -28,6 +34,7 @@ def apply_deadband(value, threshold):
     if abs(value) < threshold:
         return 0
     return value
+
 
 # Function to rotate a surface around its center
 def rotate_surface(surface, angle, center_pos):
@@ -48,10 +55,12 @@ def get_wheel_rpms(speed, heading, target_rpm, imu_data, conversion_factor):
     )
     return right_wheel_rpm, left_wheel_rpm
 
+
 def rpm_to_accelerometer_data_to_rpm(rpm):
-    acc_out = (rpm**2)*8*(1.118*(10**-5))
-    acc_to_rpm = math.sqrt(acc_out/(8*(1.118*(10**-5))))
+    acc_out = (rpm**2) * 8 * (1.118 * (10**-5))
+    acc_to_rpm = math.sqrt(acc_out / (8 * (1.118 * (10**-5))))
     return acc_to_rpm
+
 
 def fake_accelerometer_data(rpm, elapsed_time, rotational_position):
     # Emulate accelerometer data
@@ -63,6 +72,7 @@ def fake_accelerometer_data(rpm, elapsed_time, rotational_position):
     normalized_angle = max(0, total_rotation)
     rotational_position += normalized_angle
     return rotational_position % (2 * math.pi)
+
 
 # Create the robot surface
 robot_surface = pygame.Surface((500, 500), pygame.SRCALPHA)  # Transparent support
@@ -88,8 +98,8 @@ while running:
         raise Exception("No joystick detected")
 
     # Apply deadband to joystick axes
-    x_axis = apply_deadband(-joystick.get_axis(3), deadband)
-    y_axis = apply_deadband(joystick.get_axis(2), deadband)
+    x_axis = apply_deadband(-joystick.get_axis(4), deadband)
+    y_axis = apply_deadband(joystick.get_axis(3), deadband)
 
     # Calculate heading with deadband
     heading = math.degrees(math.atan2(y_axis, x_axis))
@@ -98,7 +108,7 @@ while running:
 
     # Calculate speed and RPM
     speed = min(math.sqrt(x_axis**2 + y_axis**2), 1)  # Cap speed at 1
-    target_rpm = ((joystick.get_axis(4) + 1) / 2) * max_rpm
+    target_rpm = ((joystick.get_axis(2) + 1) / 2) * max_rpm
 
     # Clear surfaces
     screen.fill((0, 0, 0))  # Black background
@@ -151,6 +161,9 @@ while running:
     left_rpm_text = font.render(str(round(left_wheel_rpm)), True, (255, 0, 0))
     imu_text = font.render(str(round(imu_data, 2)), True, (255, 0, 0))
 
+    axis1_text = font.render("x axis = " + str(x_axis), True, (255, 0, 0))
+    axis2_text = font.render("y axis = " + str(y_axis), True, (255,0,0))
+    axis3_text = font.render("trigger axis = "+str(joystick.get_axis(2)),True,(255,0,0))
     # Blit texts and data to the screen
     screen.blit(fps_text, (650, 550))  # Bottom-right for FPS
     screen.blit(title_text, (200, 5))  # Top-center for title
@@ -160,6 +173,9 @@ while running:
     screen.blit(right_rpm_text, (10, 450))  # Right RPM text
     screen.blit(left_rpm_text, (10, 550))  # Left RPM text
     screen.blit(imu_text, (10, 350))  # IMU data
+    screen.blit(axis1_text, (10,10))
+    screen.blit(axis2_text, (10, 60))
+    screen.blit(axis3_text, (10,110))
 
     # Refresh the screen
     pygame.display.flip()  # Update display
